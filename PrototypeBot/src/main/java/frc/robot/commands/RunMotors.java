@@ -38,6 +38,7 @@ public class RunMotors extends Command {
 
     motorType.setDefaultOption("Talons", 0);
     motorType.addOption("Sparks", 1);
+    motorType.addOption("Sims", 2);
     motorTypeSelected = motorType.getSelected();
 
     motor1.setDefaultOption("Run", true);

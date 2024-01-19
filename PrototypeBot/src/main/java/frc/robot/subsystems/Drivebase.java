@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
@@ -16,15 +18,22 @@ public class Drivebase extends SubsystemBase {
   TalonFX Talon_2;
   TalonFX Talon_3;
   TalonFX Talon_4;
+
   CANSparkMax Spark_1;
   CANSparkMax Spark_2;
   CANSparkMax Spark_3;
   CANSparkMax Spark_4;
 
+  TalonSRX sim_1;
+  TalonSRX sim_2;
+  TalonSRX sim_3;
+  TalonSRX sim_4;
+
   private static Drivebase drivebase;
 
   TalonFX [] talonMotors = {Talon_1, Talon_2, Talon_3, Talon_4};
   CANSparkMax [] canMotors = {Spark_1, Spark_2, Spark_3, Spark_4};
+  TalonSRX [] sims = {sim_1, sim_2, sim_3, sim_4};
 
   int motorType;
 
@@ -40,14 +49,21 @@ public class Drivebase extends SubsystemBase {
       Spark_1 = new CANSparkMax(0, MotorType.kBrushless);
       Spark_1 = new CANSparkMax(0, MotorType.kBrushless);
       Spark_1 = new CANSparkMax(0, MotorType.kBrushless);
+
+      sim_1 = new TalonSRX(0);
+      sim_2 = new TalonSRX(0);
+      sim_3 = new TalonSRX(0);
+      sim_4 = new TalonSRX(0);
     }
 
   public void setPercentOutput (int motorNum, double speed) {
 
     if (motorType == 0) {
       talonMotors[motorNum].setControl(motorDutyCycle.withOutput(speed));
-    } else {
+    } else if (motorType == 1) {
       canMotors[motorNum].set(speed);
+    } else if (motorType ==2) {
+      sim_1.set(ControlMode.PercentOutput, speed);
     }
   }
 
