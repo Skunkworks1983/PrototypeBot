@@ -9,15 +9,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class OI extends SubsystemBase {
 
-  Joystick leftJoystick;
-  Joystick rightJoystick;
+  private static OI oi;
+  Joystick joystick;
   
-  public OI() {
-    
+  private OI() {
+    joystick = new Joystick(0);
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public double getY() {
+    return joystick.getY();
+  }
+
+  public static OI getInstance () {
+    if (oi == null) {
+      oi = new OI();
+    }
+    return oi;
   }
 }
