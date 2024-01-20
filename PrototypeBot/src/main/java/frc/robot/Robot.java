@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.RunMotors;
-import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Motor;
 import frc.robot.subsystems.OI;
 
 /**
@@ -19,9 +22,25 @@ import frc.robot.subsystems.OI;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  Drivebase drivebase = Drivebase.getInstance();
+
   OI oi = OI.getInstance();
-  RunMotors runMotors = new RunMotors(drivebase, oi);
+
+  SendableChooser<Integer> motor1Type = new SendableChooser<>();
+  SendableChooser<Integer> motor2Type = new SendableChooser<>();
+  SendableChooser<Integer> motor3Type = new SendableChooser<>();
+  SendableChooser<Integer> motor4Type = new SendableChooser<>();
+
+  SendableChooser<Integer> motor1Status = new SendableChooser<>();
+  SendableChooser<Integer> motor2Status = new SendableChooser<>();
+  SendableChooser<Integer> motor3Status = new SendableChooser<>();
+  SendableChooser<Integer> motor4Status = new SendableChooser<>();
+
+  Motor motor1;
+  Motor motor2;
+  Motor motor3;
+  Motor motor4;
+
+  double runSpeed = 0;
 
 
   private RobotContainer m_robotContainer;
@@ -32,6 +51,49 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    motor1Type.setDefaultOption("Motor 1: ---", 0);
+    motor1Type.addOption("Motor 1: Talon", 1);
+    motor1Type.addOption("Motor 1: Spark", 2);
+    motor1Type.addOption("Motor 1: Sim", 3);
+
+    motor2Type.setDefaultOption("Motor 2: ---", 0);
+    motor2Type.addOption("Motor 2: Talon", 1);
+    motor2Type.addOption("Motor 2: Spark", 2);
+    motor2Type.addOption("Motor 2: Sim", 3);
+
+    motor3Type.setDefaultOption("Motor 3: ---", 0);
+    motor3Type.addOption("Motor 3: Talon", 1);
+    motor3Type.addOption("Motor 3: Spark", 2);
+    motor3Type.addOption("Motor 3: Sim", 3);
+
+    motor4Type.setDefaultOption("Motor 4: ---", 0);
+    motor4Type.addOption("Motor 4: Talon", 1);
+    motor4Type.addOption("Motor 4: Spark", 2);
+    motor4Type.addOption("Motor 4: Sim", 3);
+
+    double motor1Id = SmartDashboard.getNumber("MOTOR 1 ID", 1);
+    SmartDashboard.putNumber("MOTOR 1 ID", motor1Id);
+
+    double motor2Id = SmartDashboard.getNumber("MOTOR 2 ID", 2);
+    SmartDashboard.putNumber("MOTOR 2 ID", motor2Id);
+
+    double motor3Id = SmartDashboard.getNumber("MOTOR 3 ID", 3);
+    SmartDashboard.putNumber("MOTOR 3 ID", motor3Id);
+
+    double motor4Id = SmartDashboard.getNumber("MOTOR 4 ID", 4);
+    SmartDashboard.putNumber("MOTOR 4 ID", motor4Id);
+
+    motor1Status.setDefaultOption("Run", 0);
+    motor1Status.addOption("Off", 1);
+
+    motor2Status.setDefaultOption("Run", 0);
+    motor2Status.addOption("Off", 1);
+
+    motor3Status.setDefaultOption("Run", 0);
+    motor3Status.addOption("Off", 1);
+    
+    motor4Status.setDefaultOption("Run", 0);
+    motor4Status.addOption("Off", 1);
     
     m_robotContainer = new RobotContainer();
   }
@@ -54,7 +116,21 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+
+    if (motor1Type.getSelected() != 0) {
+      motor1 = new Motor(motor1Type.getSelected(), (int)motor1Id);
+    }
+    if (motor2Type.getSelected() != 0) {
+      motor2 = new Motor(motor2Type.getSelected(), (int)motor2Id);
+    }
+    if (motor3Type.getSelected() != 0) {
+      motor3 = new Motor(motor3Type.getSelected(), (int)motor3Id);
+    }
+    if (motor4Type.getSelected() != 0) {
+      motor4 = new Motor(motor4Type.getSelected(), (int)motor4Id);
+    }
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -83,12 +159,34 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    runMotors.schedule();
+    
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    
+    double joystickValue = oi.getY();
+    SmartDashboard.putNumber("Joystick", joystickValue);
+
+    if (MathUtil.applyDeadband(joystickValue, .1)==0) {
+      runSpeed = SmartDashboard.getNumber("run speed", 0);
+      SmartDashboard.putNumber("run speed", runSpeed);
+    }
+    
+    if (motor1Status.getSelected() == 0) {
+      motor1.setPercentOutput(runSpeed);
+    }
+    if (motor2Status.getSelected() == 0) {
+      motor2.setPercentOutput(runSpeed);
+    }
+    if (motor3Status.getSelected() == 0) {
+      motor3.setPercentOutput(runSpeed);
+    }
+    if (motor4Status.getSelected() == 0) {
+      motor4.setPercentOutput(runSpeed);
+    }
+  }
 
   @Override
   public void testInit() {
