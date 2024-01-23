@@ -40,15 +40,21 @@ public class RunMotors extends Command {
 
     motor1Status.setDefaultOption("1: OFF", 0);
     motor1Status.addOption("1: PCT OUTPUT", 1);
+    motor1Status.addOption("2: VELOCITY", 2);
 
     motor2Status.setDefaultOption("2: OFF", 0);
     motor2Status.addOption("2: PCT OUTPUT", 1);
+    motor2Status.addOption("3: VELOCITY", 2);
 
     motor3Status.setDefaultOption("3: OFF", 0);
     motor3Status.addOption("3: PCT OUTPUT", 1);
+    motor3Status.addOption("3: VELOCITY", 2);
+
 
     motor4Status.setDefaultOption("4: OFF", 0);
     motor4Status.addOption("4: PCT OUTPUT", 1);
+    motor4Status.addOption("3: VELOCITY", 2);
+
 
     motor1Joystick.setDefaultOption("Joystick", true);
     motor1Joystick.addOption("Input", false);
@@ -85,7 +91,7 @@ public class RunMotors extends Command {
   @Override
   public void execute() {
     double joystickValue = MathUtil.applyDeadband(oi.getY(), .1);
-    SmartDashboard.putNumber("joystick", joystickValue);
+    SmartDashboard.putNumber("JOYSTICK", joystickValue);
 
     double motor1Input = SmartDashboard.getNumber("MOTOR 1 SPEED", 0); 
     double motor2Input = SmartDashboard.getNumber("MOTOR 2 SPEED", 0); 
@@ -94,39 +100,79 @@ public class RunMotors extends Command {
     
     if (motor1Status.getSelected() == 1) {
       if (motor1Joystick.getSelected()) {
-        SmartDashboard.putBoolean("running", true);
         motor1.setPercentOutput(joystickValue);
       } else {
         motor1.setPercentOutput(motor1Input);
       }
+
+    } else if (motor1Status.getSelected() == 2) {
+
+      if (motor1Joystick.getSelected()) {
+        motor1.setVelocity(joystickValue);
+      } else {
+        motor1.setVelocity(motor1Input);
+      }
+
     } else {
-        motor1.setPercentOutput(0);
+
+      motor1.setPercentOutput(0);
     }
+    
+
     if (motor2Status.getSelected() == 1) {
       if (motor2Joystick.getSelected()) {
         motor2.setPercentOutput(joystickValue);
       } else {
         motor2.setPercentOutput(motor2Input);
       }
+      
+    } else if (motor2Status.getSelected() == 2) {
+
+      if (motor2Joystick.getSelected()) {
+        motor2.setVelocity(joystickValue);
+      } else {
+        motor2.setVelocity(motor1Input);
+      }
+
     } else {
         motor2.setPercentOutput(0);
     }
+
+
     if (motor3Status.getSelected() == 1) {
       if (motor3Joystick.getSelected()) {
         motor3.setPercentOutput(joystickValue);
       } else {
         motor3.setPercentOutput(motor3Input);
       }
+    } else if (motor3Status.getSelected() == 2) {
+
+      if (motor3Joystick.getSelected()) {
+        motor3.setVelocity(joystickValue);
+      } else {
+        motor3.setVelocity(motor1Input);
+      }
+
     } else {
         motor3.setPercentOutput(0);
     }
+
+
     if (motor4Status.getSelected() == 1) {
       if (motor4Joystick.getSelected()) {
         motor4.setPercentOutput(joystickValue);
       } else {
         motor4.setPercentOutput(motor4Input);
       }
-    }  else {
+    } else if (motor4Status.getSelected() == 2) {
+
+      if (motor4Joystick.getSelected()) {
+        motor4.setVelocity(joystickValue);
+      } else {
+        motor4.setVelocity(motor1Input);
+      }
+
+    } else {
         motor4.setPercentOutput(0);
     }
   }

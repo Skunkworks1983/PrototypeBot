@@ -14,14 +14,10 @@ package frc.robot;
  */
 public final class Constants {
 
-  // motor ids
-  public static final int MOTOR_1 = 0;
-  public static final int MOTOR_2 = 0;
-  public static final int MOTOR_3 = 0;
-  public static final int MOTOR_4 = 0;
+  public static final double VELOCITY_KP = .1;
+  public static final double VELOCITY_KI = 0;
+  public static final double VELOCITY_KD = 0;
 
-  // canivore
-  public static final String CANIVORE_NAME = "Canivore_1";
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
